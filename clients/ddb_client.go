@@ -23,10 +23,39 @@ const (
 	FeedStatTableNameHashKey      = "FeedID"
 	CovidRelatedResourceTableName = "CovidResources"
 	CovidRelatedResourceHashKey   = "ID"
+	OfferTableName                = "Offers"
 )
 
 type DynamoClient struct {
 	SVC *dynamodb.DynamoDB
+}
+
+func (client *DynamoClient) GetOfferData(order ddb.Order) (*ddb.Offer, error) {
+	resourceId := order.ResourceId
+	offerId := order.OfferId
+
+	result, err := client.SVC.GetItem(&dynamodb.GetItemInput{
+		TableName: aws.String(OfferTableName),
+		Key: map[string]*dynamodb.AttributeValue{
+			"ResourecId": {
+				S: aws.String(resourceId),
+			},
+			"OfferId": {
+				S: aws.String(offerId),
+			},
+		},
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	item := new(ddb.Offer)
+	err = dynamodbattribute.UnmarshalMap(result.Item, item)
+	if err != nil {
+		return nil, err
+	}
+	return item, nil
 }
 
 func (client *DynamoClient) RemoveCovidResource(resourceID string) error {
