@@ -1,20 +1,22 @@
 package router
 
 import (
-	"github.com/dandersoncouncil/covid_help/handler"
 	"log"
+
+	"github.com/dandersoncouncil/covid_help/handler"
 
 	"github.com/aws/aws-lambda-go/events"
 )
 
 const (
-	FEED_PATH         = "/Feed"
-	FeedMediaPath     = "/Feed/Media"
-	COMMENT_PATH      = "/Comment"
-	USER_PATH         = "/User"
-	PROFILE_PIC       = "/User/profile_pic"
-	FeedStat          = "/FeedStat"
-	CovidResourecPath = "/covid_resouce"
+	FEED_PATH               = "/Feed"
+	FeedMediaPath           = "/Feed/Media"
+	COMMENT_PATH            = "/Comment"
+	USER_PATH               = "/User"
+	PROFILE_PIC             = "/User/profile_pic"
+	FeedStat                = "/FeedStat"
+	CovidResourecPath       = "/covid_resouce"
+	CovidResourceCategories = "/covid_resouce_categories"
 )
 
 type GlobalRouter struct {
@@ -25,6 +27,7 @@ type GlobalRouter struct {
 	FeedStatHandler      *handler.FeedStatHandler
 	FeedMediaHandler     *handler.FeedMediaHandler
 	CovidResourcehandler *handler.CovidResourcehandler
+	CategoryHandler      *handler.CategoryHandler
 }
 
 func (this *GlobalRouter) HandleRequest(req events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -53,6 +56,10 @@ func (this *GlobalRouter) HandleRequest(req events.APIGatewayProxyRequest) (even
 
 	if path == CovidResourecPath {
 		return this.CovidResourcehandler.HandleRequest(req)
+	}
+
+	if path == CovidResourceCategories {
+		return this.CategoryHandler.HandleRequest(req)
 	}
 
 	return this.FeedHandler.HandleRequest(req)

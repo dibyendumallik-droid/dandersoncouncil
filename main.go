@@ -70,9 +70,10 @@ func apiGatewayHandler() {
 	feedStatHandler := handler.FeedStatHandler{&dynamoClient}
 	feedMediaHandler := handler.FeedMediaHandler{&s3Accessor}
 	covidResourceHandler := handler.CovidResourcehandler{Client: &dynamoClient, EsAccessor: esclient, S3: &s3Accessor}
+	categoryHandler := handler.CategoryHandler{}
 
 	globalRouter := router.GlobalRouter{&feedHandler, &picHandler,
-		&userHandler, &commentHandler, &feedStatHandler, &feedMediaHandler, &covidResourceHandler}
+		&userHandler, &commentHandler, &feedStatHandler, &feedMediaHandler, &covidResourceHandler, &categoryHandler}
 
 	lambda.Start(globalRouter.HandleRequest)
 }
